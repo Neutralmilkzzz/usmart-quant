@@ -25,6 +25,7 @@ class FakeFeed:
         return StockSnapshot(
             symbol=item.symbol,
             name=item.name,
+            name_zh=item.name_zh,
             asset_type=item.asset_type,
             watch_priority=item.watch_priority,
             price=100 + rank,
@@ -40,10 +41,10 @@ class SlowScanner:
 
 
 def write_universe(path, count: int = 12) -> None:
-    rows = ["symbol,name,asset_type,category,watch_priority,notes"]
+    rows = ["symbol,name,name_zh,asset_type,category,watch_priority,notes"]
     for index in range(count):
         priority = "P0" if index % 2 == 0 else "P1"
-        rows.append(f"S{index},Name {index},stock,test,{priority},test")
+        rows.append(f"S{index},Name {index},名称{index},stock,test,{priority},test")
     path.write_text("\n".join(rows), encoding="utf-8")
 
 
@@ -70,7 +71,7 @@ def test_full_scan_with_fake_feed_sends_message(tmp_path):
     assert result.status.value == "SUCCESS"
     assert result.result_count == 10
     assert fake.messages
-    assert "S11" in fake.messages[0]
+    assert "S11 名称11 / Name 11" in fake.messages[0]
 
 
 def test_partial_failure_scan_returns_partial_success(tmp_path):
@@ -109,4 +110,4 @@ def test_command_handler_reports_busy_scan(tmp_path):
         scheduler_enabled=True,
     )
 
-    assert handler.handle_command("/scan") == ["Scan already running. Please wait."]
+    assert handler.handle_command("/scan") == ["扫描正在运行，请稍后再试。"]

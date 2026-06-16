@@ -42,7 +42,7 @@ class StockScanner:
     def run_scan(self, *, trigger: str = "manual") -> ScanResult:
         started_at = self.state_machine.try_start(trigger=trigger)
         if started_at is None:
-            raise ScanAlreadyRunningError("Scan already running. Please wait.")
+            raise ScanAlreadyRunningError("扫描正在运行，请稍后再试。")
 
         market_status = MarketStatus.unknown()
         snapshots: list[StockSnapshot] = []

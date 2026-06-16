@@ -23,6 +23,7 @@ def item(symbol: str = "AAPL") -> UniverseItem:
     return UniverseItem(
         symbol=symbol,
         name=symbol,
+        name_zh="测试标的",
         asset_type="stock",
         category="core",
         watch_priority="P0",
@@ -52,6 +53,7 @@ def test_finnhub_quote_profile_metric_mapping():
     assert snapshot.price == 200
     assert snapshot.day_change_pct == 0.5
     assert snapshot.name == "Apple"
+    assert snapshot.name_zh == "测试标的"
     assert snapshot.market_cap == 3000000
     assert snapshot.avg_volume_10d == 100
     assert snapshot.errors == []

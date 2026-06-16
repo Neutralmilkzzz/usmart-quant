@@ -46,4 +46,5 @@ def test_load_real_universe_filters_to_p0_p1():
     assert items
     assert {item.watch_priority for item in items} <= {"P0", "P1"}
     assert len({item.symbol for item in items}) == len(items)
+    assert all(item.name_zh for item in items)
     assert "XLP" not in {item.symbol for item in items}

@@ -15,6 +15,7 @@ def snapshot(
     return StockSnapshot(
         symbol=symbol,
         name=symbol,
+        name_zh=f"{symbol}中文名",
         asset_type="stock",
         watch_priority=priority,
         price=price,
@@ -73,4 +74,4 @@ def test_selector_limits_to_top_n_and_adds_market_closed_reason():
 
     assert len(selected) == 10
     assert selected[0].symbol == "S19"
-    assert any("Market closed" in reason for reason in selected[0].selected_reasons)
+    assert any("休市" in reason for reason in selected[0].selected_reasons)

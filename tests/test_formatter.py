@@ -24,26 +24,27 @@ def test_format_scan_result_includes_top_record_and_stable_percent():
             CandidateRecord(
                 symbol="NVDA",
                 name="NVIDIA",
+                name_zh="英伟达",
                 watch_priority="P0",
                 price=132.4,
                 day_change_pct=2.3456,
-                selected_reasons=["Core watchlist symbol", "Top intraday mover"],
+                selected_reasons=["核心观察标的", "P0/P1 观察池内当日涨幅靠前"],
             )
         ]
     )
 
     [message] = format_scan_result(result)
 
-    assert "US Stock Scan - Top 10" in message
-    assert "NVDA NVIDIA" in message
-    assert "Day +2.35%" in message
-    assert "Note: This is not trading advice." in message
+    assert "美股扫描 - Top 10" in message
+    assert "NVDA 英伟达 / NVIDIA" in message
+    assert "日涨跌幅 +2.35%" in message
+    assert "提示：本结果不构成交易建议。" in message
 
 
 def test_format_empty_result_is_clear():
     [message] = format_scan_result(make_result([]))
 
-    assert "No sortable candidates found." in message
+    assert "暂无可排序候选标的。" in message
 
 
 def test_format_splits_long_messages():
@@ -51,10 +52,11 @@ def test_format_splits_long_messages():
         CandidateRecord(
             symbol=f"S{i}",
             name="Name",
+            name_zh="名称",
             watch_priority="P1",
             price=100,
             day_change_pct=float(i),
-            selected_reasons=["Top intraday mover in P0/P1 universe"],
+            selected_reasons=["P0/P1 观察池内当日涨幅靠前"],
         )
         for i in range(10)
     ]
@@ -75,5 +77,6 @@ def test_status_and_help_text():
         scheduler_enabled=True,
     )
 
-    assert "Scheduler: enabled" in status
-    assert "/scan - run scan now" in help_text()
+    assert "定时扫描：已启用" in status
+    assert "上次扫描状态：成功" in status
+    assert "/scan - 立即执行一次扫描" in help_text()
