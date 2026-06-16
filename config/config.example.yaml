@@ -1,0 +1,28 @@
+scanner:
+  scan_interval_minutes: 60
+  top_n: 10
+  enabled_priorities:
+    - P0
+    - P1
+  universe_path: data/universe_100.csv
+  state_path: runtime/state.json
+  last_scan_path: runtime/last_scan.json
+
+filters:
+  require_price: true
+  require_day_change_pct: true
+
+strategy:
+  sort_field: day_change_pct
+  sort_direction: desc
+  prefer_p0_on_tie: true
+
+finnhub:
+  timeout_seconds: 10
+  max_retries: 3
+  retry_backoff_seconds: 1
+
+notifier:
+  telegram_enabled: true
+  discord_enabled: true
+  max_message_chars: 3900

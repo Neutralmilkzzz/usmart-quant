@@ -43,3 +43,55 @@
 - `subscribe`
 - `get_plate_list`
 - `get_plate_stock`
+
+## V1 美股选股提醒 Bot
+
+当前主程序位于 `src/stock_alert_bot/`，实现范围以
+`docs/work_docs/PRD_V1_US_STOCK_ALERT_BOT.md` 和
+`docs/work_docs/V1_MVP_STRATEGY.md` 为准。
+
+V1 只做：
+
+- 读取 `data/universe_100.csv` 中的 P0 / P1 股票池
+- 使用 Finnhub `market-status`、`quote`、`profile2`、`metric`
+- 过滤无价格或无 `day_change_pct` 的标的
+- 按 `day_change_pct` 降序排序，P0 同分优先，再按市值同分优先
+- 输出 Top 10，并通过 Telegram / Discord 推送
+- 支持 `/scan`、`/status`、`/help`
+
+V1 不做回测、beta、多因子 composite score、K 线技术指标和自动交易。
+
+### 本地开发
+
+```powershell
+python -m pip install -e .[dev]
+python -m pytest
+```
+
+真实运行前需要在 `.env/` 下准备环境变量文件，例如 `.env/finnhub.env`：
+
+```text
+FINNHUB_API_KEY=...
+TELEGRAM_BOT_TOKEN=...
+TELEGRAM_CHAT_ID=...
+DISCORD_BOT_TOKEN=...
+DISCORD_CHANNEL_ID=...
+DISCORD_APPLICATION_ID=...
+DISCORD_GUILD_ID=...
+```
+
+本地跑一次真实扫描并打印到控制台：
+
+```powershell
+python -m stock_alert_bot.app --scan-once --console
+```
+
+启动常驻进程：
+
+```powershell
+python -m stock_alert_bot.app
+```
+
+### 部署
+
+systemd 示例见 `deploy/us-stock-alert-bot.service.example`。部署到 AWS Linux 后，建议先完成一次 `--scan-once --console` 烟测，再启用 systemd 常驻运行。

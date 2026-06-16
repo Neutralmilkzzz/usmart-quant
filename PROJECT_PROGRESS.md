@@ -111,7 +111,22 @@
 1. 整理并确认丰臣秀吉产出的字段文档
 2. 让立花宗茂提交“美股自选股筛选文档”
 3. 基于字段能力讨论第一版可实现因子
-4. 再进入主程序框架设计
+4. 基于 `docs/work_docs/PRD_V1_US_STOCK_ALERT_BOT.md` 进入主程序框架设计
+
+## 最新阶段更新
+
+已新增正式 PRD：
+
+- `docs/work_docs/PRD_V1_US_STOCK_ALERT_BOT.md`
+
+该 PRD 已冻结 V1 的产品范围、系统模块、股票池口径、因子框架、Bot 命令、状态机、AWS Linux 部署要求、测试要求与验收标准。
+
+已新增 V1 策略修正文档与测试计划：
+
+- `docs/work_docs/V1_MVP_STRATEGY.md`
+- `docs/work_docs/TEST_PLAN_V1.md`
+
+当前策略口径已调整为 MVP 裸跑实时扫描：不做回测、不做 beta、不做复杂多因子叠加。V1 只做 P0 / P1 股票池内的实时 quote 筛选与 `day_change_pct` 排序，输出 Top 10 给用户人工判断。
 
 ## Git 回滚定位说明
 
@@ -126,3 +141,34 @@
 - 还没有正式进入主程序编码
 - 正在确认 feed、字段、Bot 通道和筛选框架
 - 分工已建立，但策略与状态机尚未定稿
+
+## 2026-06-16 德川家康开发更新
+
+已按 `docs/work_docs/HANDOFF_TO_TOKUGAWA.md` 和
+`docs/work_docs/PRD_V1_US_STOCK_ALERT_BOT.md` 进入 V1 主程序开发。
+
+当前已完成：
+
+- Python `src/stock_alert_bot/` 项目骨架
+- `data/universe_100.csv` 机器可读股票池
+- 配置示例 `config/config.example.yaml`
+- Finnhub `market-status` / `quote` / `profile2` / `metric` 封装
+- P0 / P1 裸跑 selector
+- Top 10 formatter
+- Telegram / Discord 通知与命令模块
+- 内部 scheduler
+- `runtime/state.json` 与 `runtime/last_scan.json` 状态输出
+- systemd 示例 `deploy/us-stock-alert-bot.service.example`
+- 最小测试集
+
+验证结果：
+
+- `python -m pytest`：20 passed
+- `python -m compileall src tests`：通过
+
+仍需真实环境联调：
+
+- Finnhub 真实 API 扫描烟测
+- Telegram `/scan` `/status` `/help`
+- Discord slash command `/scan` `/status` `/help`
+- AWS Linux systemd 常驻运行
