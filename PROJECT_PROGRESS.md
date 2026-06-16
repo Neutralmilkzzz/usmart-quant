@@ -23,6 +23,7 @@
 - 重构前中文化测试检查点已提交：`ed0b961` `Checkpoint localization tests before V2 refactor`
 - V2 重构方向已确定：拆出 Universe / Feed / Factor / Strategy / Delivery 五层
 - 德川家康负责中文化，立花宗茂负责 V2 因子层与策略层重构
+- 已确认 Finnhub 免费额度为 `60 calls/min`，项目当前决定接受低频长扫描，不优先缩小股票池
 
 ## 已完成事项
 
@@ -33,6 +34,7 @@
 - `README.md`
 - `docs/work_docs/PRODUCT_ROADMAP_MVP_TO_V5.md`
 - `docs/work_docs/PRD_V2_FACTOR_STRATEGY_REFACTOR.md`
+- `docs/work_docs/FINNHUB_RATE_LIMIT_PLAN.md`
 
 ### 2. uSMART / Futu OpenAPI 资料落地
 
@@ -95,7 +97,8 @@
 
 - 先确认 Finnhub API 返回字段与 feed 能力
 - 先回答“能拿到哪些字段、能拼出哪些可实现因子”
-- 字段确认完成后再进入实现阶段
+- 继续负责免费额度限流方案设计
+- 当前原则：接受慢速扫描，不优先缩小股票池
 
 ### 立花宗茂
 
@@ -109,7 +112,7 @@
 2. 立花宗茂按 V2 PRD 拆出 factor registry
 3. 立花宗茂按 V2 PRD 拆出 strategy registry
 4. 将当前 Top 10 裸跑规则迁移为 `DayChangeTopNStrategy`
-5. 补因子层、策略层和 pipeline 回归测试
+5. 丰臣秀吉设计 `55-60 calls/min` 约束下的慢速扫描方案
 
 ## 下一步建议
 
@@ -117,8 +120,9 @@
 
 1. 德川家康先完成中文化，避免用户侧输出继续混杂英文
 2. 立花宗茂按 V2 PRD 先建接口，不立刻大规模删除旧代码
-3. 用回归测试锁住 V1 排序结果
-4. 再迁移 scanner 到 factor + strategy pipeline
+3. 丰臣秀吉先产出 Finnhub 免费额度节流设计，不急着缩池
+4. 用回归测试锁住 V1 排序结果
+5. 再迁移 scanner 到 factor + strategy pipeline
 
 ## 最新阶段更新
 
@@ -146,6 +150,12 @@
 - `docs/work_docs/PRD_V2_FACTOR_STRATEGY_REFACTOR.md`
 
 该文档明确 V2 的核心目标是拆出因子层与策略层，让后续新增因子或策略时不需要改 scanner 主流程。V2 不改变当前 `day_change_pct` Top 10 策略口径，不引入回测，不引入自动交易。
+
+已新增 Finnhub 免费额度限流方案文档：
+
+- `docs/work_docs/FINNHUB_RATE_LIMIT_PLAN.md`
+
+该文档明确当前项目对免费额度的处理原则不是缩池，而是接受低频长扫描，按 `55-60 calls/min` 约束设计节流、排队和缓存方案。
 
 ## Git 回滚定位说明
 
