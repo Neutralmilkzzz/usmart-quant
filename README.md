@@ -95,3 +95,18 @@ python -m stock_alert_bot.app
 ### 部署
 
 systemd 示例见 `deploy/us-stock-alert-bot.service.example`。部署到 AWS Linux 后，建议先完成一次 `--scan-once --console` 烟测，再启用 systemd 常驻运行。
+
+辅助运维脚本：
+
+- `deploy/install_deploy.sh`：安装系统依赖、拉取或更新 repo、创建 venv、安装 Python 包、生成 systemd 服务。
+- `deploy/start_bot.sh`：优先通过 systemd 启动；若 service 不存在，则使用 `nohup` 启动。
+- `deploy/stop_bot.sh`：优先停止 systemd 服务；若 service 不存在，则按 PID 文件或进程名停止。
+
+默认部署目录是 `/opt/usmart-quant`。可以通过环境变量覆盖：
+
+```bash
+APP_DIR=/opt/usmart-quant \
+REPO_URL=https://github.com/Neutralmilkzzz/usmart-quant.git \
+BRANCH=main \
+bash deploy/install_deploy.sh
+```
