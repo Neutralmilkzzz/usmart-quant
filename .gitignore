@@ -8,3 +8,8 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 *.egg-info/
+
+# Private working docs and notes
+doc/
+docs/meeting_notes/
+docs/private_notes/
