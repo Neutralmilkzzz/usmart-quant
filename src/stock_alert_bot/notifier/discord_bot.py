@@ -42,9 +42,9 @@ class DiscordNotifier:
         if not self.application_id:
             raise ValueError("DISCORD_APPLICATION_ID is required to register slash commands.")
         commands = [
-            {"name": "scan", "type": 1, "description": "Run stock scan now"},
-            {"name": "status", "type": 1, "description": "Show bot and scanner status"},
-            {"name": "help", "type": 1, "description": "Show commands"},
+            {"name": "scan", "type": 1, "description": "立即执行一次扫描"},
+            {"name": "status", "type": 1, "description": "查看 Bot 和扫描器状态"},
+            {"name": "help", "type": 1, "description": "查看命令列表"},
         ]
         if self.guild_id:
             endpoint = f"/applications/{self.application_id}/guilds/{self.guild_id}/commands"
@@ -75,15 +75,15 @@ class DiscordNotifier:
             for extra in responses[1:]:
                 await interaction.followup.send(extra)
 
-        @tree.command(name="scan", description="Run stock scan now", guild=guild)
+        @tree.command(name="scan", description="立即执行一次扫描", guild=guild)
         async def scan(interaction: discord.Interaction) -> None:
             await _send_response(interaction, "/scan")
 
-        @tree.command(name="status", description="Show bot and scanner status", guild=guild)
+        @tree.command(name="status", description="查看 Bot 和扫描器状态", guild=guild)
         async def status(interaction: discord.Interaction) -> None:
             await _send_response(interaction, "/status")
 
-        @tree.command(name="help", description="Show commands", guild=guild)
+        @tree.command(name="help", description="查看命令列表", guild=guild)
         async def help_command(interaction: discord.Interaction) -> None:
             await _send_response(interaction, "/help")
 

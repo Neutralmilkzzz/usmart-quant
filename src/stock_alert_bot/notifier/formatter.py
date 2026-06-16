@@ -7,19 +7,19 @@ from stock_alert_bot.models import CandidateRecord, ScanResult
 
 def format_scan_result(result: ScanResult, *, max_message_chars: int = 3900) -> list[str]:
     lines = [
-        "US Stock Scan - Top 10",
-        f"Time: {_format_time(result.finished_at)}",
-        "Universe: P0/P1",
-        f"Market: {result.market_status.label}",
-        f"Status: {result.status.value}",
-        "Note: This is not trading advice.",
+        "美股扫描 - Top 10",
+        f"时间：{_format_time(result.finished_at)}",
+        "股票池：P0/P1",
+        f"市场状态：{result.market_status.label}",
+        f"扫描状态：{_format_status(result.status.value)}",
+        "提示：本结果不构成交易建议。",
         "",
     ]
 
     if not result.candidates:
-        lines.append("No sortable candidates found.")
+        lines.append("暂无可排序候选标的。")
         if result.errors:
-            lines.append(f"Error: {result.errors[0]}")
+            lines.append(f"错误：{result.errors[0]}")
         return _split_text("\n".join(lines), max_message_chars=max_message_chars)
 
     for index, candidate in enumerate(result.candidates, start=1):
@@ -31,15 +31,15 @@ def format_scan_result(result: ScanResult, *, max_message_chars: int = 3900) -> 
 def format_status_text(state: dict[str, object], *, scheduler_enabled: bool) -> str:
     return "\n".join(
         [
-            "US Stock Alert Bot Status",
-            "Bot: online",
-            f"Scheduler: {'enabled' if scheduler_enabled else 'disabled'}",
-            f"Scanner: {state.get('scanner_state', 'UNKNOWN')}",
-            f"Last scan started: {state.get('last_scan_started_at') or 'never'}",
-            f"Last scan finished: {state.get('last_scan_finished_at') or 'never'}",
-            f"Last scan status: {state.get('last_scan_status') or 'never'}",
-            f"Last result count: {state.get('last_result_count', 0)}",
-            f"Last error: {state.get('last_error') or 'none'}",
+            "美股提醒 Bot 状态",
+            "Bot：在线",
+            f"定时扫描：{'已启用' if scheduler_enabled else '未启用'}",
+            f"扫描器：{_format_status(str(state.get('scanner_state', 'UNKNOWN')))}",
+            f"上次扫描开始：{state.get('last_scan_started_at') or '从未运行'}",
+            f"上次扫描结束：{state.get('last_scan_finished_at') or '从未运行'}",
+            f"上次扫描状态：{_format_status(str(state.get('last_scan_status') or 'never'))}",
+            f"上次结果数量：{state.get('last_result_count', 0)}",
+            f"上次错误：{state.get('last_error') or '无'}",
         ]
     )
 
@@ -47,27 +47,35 @@ def format_status_text(state: dict[str, object], *, scheduler_enabled: bool) -> 
 def help_text() -> str:
     return "\n".join(
         [
-            "/scan - run scan now",
-            "/status - show bot and scanner status",
-            "/help - show commands",
+            "/scan - 立即执行一次扫描",
+            "/status - 查看 Bot 和扫描器状态",
+            "/help - 查看命令列表",
         ]
     )
 
 
 def _format_candidate(index: int, candidate: CandidateRecord) -> list[str]:
-    name = f" {candidate.name}" if candidate.name else ""
+    name = _format_display_name(candidate)
     market_cap = _format_optional_number(candidate.market_cap)
     avg_volume_10d = _format_optional_number(candidate.avg_volume_10d)
-    reason = "; ".join(candidate.selected_reasons)
+    reason = "；".join(candidate.selected_reasons)
     return [
         (
-            f"{index}. {candidate.symbol}{name} | Price {_format_price(candidate.price)} "
-            f"| Day {_format_percent(candidate.day_change_pct)} | Priority {candidate.watch_priority}"
+            f"{index}. {candidate.symbol} {name} | 价格 {_format_price(candidate.price)} "
+            f"| 日涨跌幅 {_format_percent(candidate.day_change_pct)} | 优先级 {candidate.watch_priority}"
         ),
-        f"   Market cap: {market_cap} | Avg volume 10d: {avg_volume_10d}",
-        f"   Reason: {reason}",
+        f"   市值：{market_cap} | 10日均量：{avg_volume_10d}",
+        f"   理由：{reason}",
         "",
     ]
+
+
+def _format_display_name(candidate: CandidateRecord) -> str:
+    if candidate.name_zh and candidate.name:
+        return f"{candidate.name_zh} / {candidate.name}"
+    if candidate.name_zh:
+        return candidate.name_zh
+    return candidate.name or ""
 
 
 def _split_text(text: str, *, max_message_chars: int) -> list[str]:
@@ -103,5 +111,20 @@ def _format_percent(value: float) -> str:
 
 def _format_optional_number(value: float | None) -> str:
     if value is None:
-        return "n/a"
+        return "无"
     return f"{value:,.2f}"
+
+
+def _format_status(value: str) -> str:
+    labels = {
+        "IDLE": "空闲",
+        "SCHEDULED": "已计划",
+        "RUNNING": "运行中",
+        "SUCCESS": "成功",
+        "PARTIAL_SUCCESS": "部分成功",
+        "FAILED": "失败",
+        "COOLDOWN": "冷却中",
+        "UNKNOWN": "未知",
+        "never": "从未运行",
+    }
+    return labels.get(value, value)

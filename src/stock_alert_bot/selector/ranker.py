@@ -36,15 +36,16 @@ def build_candidate(
         if getattr(snapshot, field_name) is None:
             missing_fields.append(field_name)
 
-    reasons = ["Top intraday mover in P0/P1 universe"]
+    reasons = ["P0/P1 观察池内当日涨幅靠前"]
     if snapshot.watch_priority == "P0":
-        reasons.insert(0, "Core watchlist symbol")
+        reasons.insert(0, "核心观察标的")
     if not market_status.is_open:
-        reasons.append("Market closed; using latest available quote")
+        reasons.append("市场当前休市，结果基于最近可用行情")
 
     return CandidateRecord(
         symbol=snapshot.symbol,
         name=snapshot.name,
+        name_zh=snapshot.name_zh,
         watch_priority=snapshot.watch_priority,
         price=snapshot.price,
         day_change_pct=snapshot.day_change_pct,

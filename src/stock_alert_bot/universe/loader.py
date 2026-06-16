@@ -68,6 +68,7 @@ def load_universe(
                 UniverseItem(
                     symbol=symbol,
                     name=(row.get("name") or "").strip(),
+                    name_zh=(row.get("name_zh") or "").strip() or None,
                     asset_type=(row.get("asset_type") or "").strip().lower(),
                     category=(row.get("category") or "").strip(),
                     watch_priority=priority,

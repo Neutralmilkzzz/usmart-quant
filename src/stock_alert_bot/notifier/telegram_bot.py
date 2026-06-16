@@ -27,9 +27,9 @@ class TelegramNotifier:
 
     def set_commands(self) -> None:
         commands = [
-            {"command": "scan", "description": "run scan now"},
-            {"command": "status", "description": "show bot and scanner status"},
-            {"command": "help", "description": "show commands"},
+            {"command": "scan", "description": "立即执行一次扫描"},
+            {"command": "status", "description": "查看 Bot 和扫描器状态"},
+            {"command": "help", "description": "查看命令列表"},
         ]
         self._post("setMyCommands", {"commands": json.dumps(commands)})
 

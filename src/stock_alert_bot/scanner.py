@@ -74,6 +74,7 @@ class StockScanner:
                         StockSnapshot(
                             symbol=item.symbol,
                             name=item.name,
+                            name_zh=item.name_zh,
                             asset_type=item.asset_type,
                             watch_priority=item.watch_priority,
                             errors=[message],

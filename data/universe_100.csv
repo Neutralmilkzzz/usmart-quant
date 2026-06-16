@@ -1,101 +1,101 @@
-symbol,name,asset_type,category,watch_priority,notes
-SPY,SPDR S&P 500 ETF Trust,etf,broad_etf,P0,Core S&P 500 tracking ETF
-VOO,Vanguard S&P 500 ETF,etf,broad_etf,P0,Core long term S&P 500 ETF
-IVV,iShares Core S&P 500 ETF,etf,broad_etf,P0,Core S&P 500 ETF
-SPLG,SPDR Portfolio S&P 500 ETF,etf,broad_etf,P1,Low fee S&P 500 alternative
-QQQ,Invesco QQQ Trust,etf,tech_broad_etf,P0,Nasdaq 100 core ETF
-QQQM,Invesco NASDAQ 100 ETF,etf,tech_broad_etf,P1,Low fee QQQ alternative
-VTI,Vanguard Total Stock Market ETF,etf,total_market_etf,P0,Total US market coverage
-SCHB,Schwab U.S. Broad Market ETF,etf,total_market_etf,P1,Broad market low fee ETF
-DIA,SPDR Dow Jones Industrial Average ETF,etf,blue_chip_etf,P1,Dow Jones tracking ETF
-IWM,iShares Russell 2000 ETF,etf,small_cap_etf,P1,Small cap risk appetite proxy
-RSP,Invesco S&P 500 Equal Weight ETF,etf,equal_weight_etf,P1,Market breadth proxy
-VUG,Vanguard Growth ETF,etf,style_etf,P1,Large cap growth ETF
-SCHG,Schwab U.S. Large-Cap Growth ETF,etf,style_etf,P1,Large cap growth alternative
-XLK,Technology Select Sector SPDR Fund,etf,sector_technology,P0,Core technology sector ETF
-XLF,Financial Select Sector SPDR Fund,etf,sector_financials,P1,Core financial sector ETF
-XLE,Energy Select Sector SPDR Fund,etf,sector_energy,P1,Core energy sector ETF
-XLV,Health Care Select Sector SPDR Fund,etf,sector_healthcare,P1,Core healthcare sector ETF
-XLI,Industrial Select Sector SPDR Fund,etf,sector_industrials,P1,Core industrial sector ETF
-XLP,Consumer Staples Select Sector SPDR Fund,etf,sector_staples,P2,Defensive sector ETF
-XLY,Consumer Discretionary Select Sector SPDR Fund,etf,sector_discretionary,P1,Consumer discretionary ETF
-SMH,VanEck Semiconductor ETF,etf,semiconductor_etf,P0,Core semiconductor theme ETF
-SOXX,iShares Semiconductor ETF,etf,semiconductor_etf,P0,Core semiconductor theme ETF
-IGV,iShares Expanded Tech-Software Sector ETF,etf,software_etf,P1,Software sector ETF
-XBI,SPDR S&P Biotech ETF,etf,biotech_etf,P2,High volatility biotech ETF
-IBIT,iShares Bitcoin Trust ETF,etf,alternative_asset_etf,P2,Bitcoin exposure proxy
-AAPL,Apple,stock,core_tech,P0,Mega cap core technology stock
-MSFT,Microsoft,stock,core_tech,P0,Cloud and AI core stock
-NVDA,NVIDIA,stock,ai_semiconductor,P0,AI trading core stock
-AMZN,Amazon,stock,cloud_consumer_platform,P0,Ecommerce and cloud core stock
-GOOGL,Alphabet,stock,internet_platform,P0,Search and cloud platform stock
-META,Meta Platforms,stock,internet_platform,P0,Advertising and AI platform stock
-TSLA,Tesla,stock,high_beta_leader,P1,High attention trading stock
-AVGO,Broadcom,stock,semiconductor_infrastructure,P0,AI infrastructure core stock
-AMD,Advanced Micro Devices,stock,semiconductor,P0,CPU GPU and AI chip stock
-NFLX,Netflix,stock,media_platform,P1,Streaming platform core stock
-ORCL,Oracle,stock,enterprise_software,P1,Cloud and database leader
-CRM,Salesforce,stock,saas,P1,Enterprise SaaS core stock
-JPM,JPMorgan Chase,stock,financials,P1,Bank sector representative
-BRK.B,Berkshire Hathaway,stock,financials,P1,Large cap defensive financial stock
-COST,Costco,stock,consumer_defensive,P1,Defensive retail leader
-MU,Micron Technology,stock,semiconductor_memory,P0,Memory chip focus stock
-TSM,Taiwan Semiconductor,stock,semiconductor_foundry,P0,Global foundry core stock
-ASML,ASML Holding,stock,semiconductor_equipment,P0,Lithography equipment leader
-QCOM,Qualcomm,stock,communication_chip,P1,Mobile chip leader
-ARM,Arm Holdings,stock,chip_ip,P1,AI ecosystem high attention stock
-MRVL,Marvell Technology,stock,data_center_chip,P1,AI networking and custom chip stock
-AMAT,Applied Materials,stock,semiconductor_equipment,P1,Semiconductor equipment core stock
-LRCX,Lam Research,stock,semiconductor_equipment,P1,Semiconductor equipment leader
-KLAC,KLA,stock,semiconductor_equipment,P1,Semiconductor inspection equipment leader
-TXN,Texas Instruments,stock,analog_chip,P1,Industrial and analog chip stock
-ADI,Analog Devices,stock,analog_chip,P1,High quality analog chip leader
-NXPI,NXP Semiconductors,stock,auto_chip,P1,Automotive and industrial chip stock
-MCHP,Microchip Technology,stock,mcu,P2,Industrial chip chain supplement
-INTC,Intel,stock,cpu_foundry,P2,Turnaround watch stock
-ANET,Arista Networks,stock,network_equipment,P1,AI data center networking stock
-PLTR,Palantir Technologies,stock,data_ai_software,P1,High attention AI software stock
-SNOW,Snowflake,stock,data_cloud,P1,Data platform representative
-CRWD,CrowdStrike,stock,cybersecurity,P1,Cybersecurity core stock
-PANW,Palo Alto Networks,stock,cybersecurity,P1,Cybersecurity leader
-ZS,Zscaler,stock,cybersecurity,P2,Cloud security representative
-NET,Cloudflare,stock,cloud_network,P2,High growth cloud network stock
-MDB,MongoDB,stock,database,P2,Developer ecosystem database stock
-DDOG,Datadog,stock,observability,P2,Cloud operations core stock
-SHOP,Shopify,stock,ecommerce_saas,P1,Merchant ecosystem core stock
-NOW,ServiceNow,stock,enterprise_workflow,P1,High quality workflow software leader
-HUBS,HubSpot,stock,marketing_saas,P2,Mid large SaaS representative
-APP,AppLovin,stock,adtech,P2,High beta growth stock
-TEAM,Atlassian,stock,collaboration_software,P2,Developer collaboration platform
-UBER,Uber Technologies,stock,platform_software,P1,Mobility platform leader
-INTU,Intuit,stock,financial_software,P1,Stable financial software leader
-MELI,MercadoLibre,stock,ecommerce_fintech,P1,Latin America platform leader
-ABNB,Airbnb,stock,travel_platform,P1,Online lodging platform stock
-BKNG,Booking Holdings,stock,travel_platform,P1,Online travel platform leader
-RDDT,Reddit,stock,community_platform,P2,New high attention platform stock
-DUOL,Duolingo,stock,education_technology,P2,High growth consumer technology stock
-SPOT,Spotify,stock,streaming_platform,P2,Audio platform representative
-PYPL,PayPal,stock,payments,P2,Payment incumbent stock
-COIN,Coinbase,stock,crypto_platform,P2,High volatility crypto platform
-HOOD,Robinhood,stock,brokerage_platform,P2,Retail trading platform
-RBLX,Roblox,stock,gaming_platform,P2,Young user platform stock
-AXP,American Express,stock,payments_financials,P1,High quality consumer finance stock
-MA,Mastercard,stock,payments,P1,Global payment network core stock
-V,Visa,stock,payments,P1,Global payment network core stock
-CAVA,CAVA Group,stock,restaurant_growth,P2,Recent high attention restaurant growth stock
-CMG,Chipotle Mexican Grill,stock,restaurant_growth,P1,Consumer growth leader
-GE,GE Aerospace,stock,industrial_aerospace,P1,Industrial leader
-RTX,RTX Corporation,stock,defense_aerospace,P1,Defense sector representative
-LMT,Lockheed Martin,stock,defense,P1,Defense leader
-NOC,Northrop Grumman,stock,defense,P2,Defense supplement
-RKLB,Rocket Lab,stock,space,P2,Space theme proxy
-ASTS,AST SpaceMobile,stock,space_communications,P2,Satellite communication high attention stock
-LLY,Eli Lilly,stock,healthcare_pharma,P0,High growth healthcare core stock
-UNH,UnitedHealth Group,stock,healthcare_services,P1,Healthcare weight leader
-ABBV,AbbVie,stock,pharma,P1,Large pharma representative
-ISRG,Intuitive Surgical,stock,medical_device,P1,Surgical robotics leader
-VRTX,Vertex Pharmaceuticals,stock,biopharma,P1,Innovative pharma representative
-XOM,Exxon Mobil,stock,energy,P1,Energy weight leader
-CVX,Chevron,stock,energy,P1,Energy weight leader
-SLB,SLB,stock,oilfield_services,P2,Oilfield services representative
-CAT,Caterpillar,stock,industrial_machinery,P1,Cyclical industrial leader
+symbol,name,name_zh,asset_type,category,watch_priority,notes
+SPY,SPDR S&P 500 ETF Trust,SPDR标普500 ETF信托,etf,broad_etf,P0,Core S&P 500 tracking ETF
+VOO,Vanguard S&P 500 ETF,先锋标普500 ETF,etf,broad_etf,P0,Core long term S&P 500 ETF
+IVV,iShares Core S&P 500 ETF,安硕核心标普500 ETF,etf,broad_etf,P0,Core S&P 500 ETF
+SPLG,SPDR Portfolio S&P 500 ETF,SPDR组合标普500 ETF,etf,broad_etf,P1,Low fee S&P 500 alternative
+QQQ,Invesco QQQ Trust,景顺QQQ信托,etf,tech_broad_etf,P0,Nasdaq 100 core ETF
+QQQM,Invesco NASDAQ 100 ETF,景顺纳斯达克100 ETF,etf,tech_broad_etf,P1,Low fee QQQ alternative
+VTI,Vanguard Total Stock Market ETF,先锋全市场ETF,etf,total_market_etf,P0,Total US market coverage
+SCHB,Schwab U.S. Broad Market ETF,嘉信美国宽基市场ETF,etf,total_market_etf,P1,Broad market low fee ETF
+DIA,SPDR Dow Jones Industrial Average ETF,SPDR道琼斯工业平均ETF,etf,blue_chip_etf,P1,Dow Jones tracking ETF
+IWM,iShares Russell 2000 ETF,安硕罗素2000 ETF,etf,small_cap_etf,P1,Small cap risk appetite proxy
+RSP,Invesco S&P 500 Equal Weight ETF,景顺标普500等权ETF,etf,equal_weight_etf,P1,Market breadth proxy
+VUG,Vanguard Growth ETF,先锋成长ETF,etf,style_etf,P1,Large cap growth ETF
+SCHG,Schwab U.S. Large-Cap Growth ETF,嘉信美国大盘成长ETF,etf,style_etf,P1,Large cap growth alternative
+XLK,Technology Select Sector SPDR Fund,科技精选行业SPDR基金,etf,sector_technology,P0,Core technology sector ETF
+XLF,Financial Select Sector SPDR Fund,金融精选行业SPDR基金,etf,sector_financials,P1,Core financial sector ETF
+XLE,Energy Select Sector SPDR Fund,能源精选行业SPDR基金,etf,sector_energy,P1,Core energy sector ETF
+XLV,Health Care Select Sector SPDR Fund,医疗保健精选行业SPDR基金,etf,sector_healthcare,P1,Core healthcare sector ETF
+XLI,Industrial Select Sector SPDR Fund,工业精选行业SPDR基金,etf,sector_industrials,P1,Core industrial sector ETF
+XLP,Consumer Staples Select Sector SPDR Fund,必需消费精选行业SPDR基金,etf,sector_staples,P2,Defensive sector ETF
+XLY,Consumer Discretionary Select Sector SPDR Fund,可选消费精选行业SPDR基金,etf,sector_discretionary,P1,Consumer discretionary ETF
+SMH,VanEck Semiconductor ETF,VanEck半导体ETF,etf,semiconductor_etf,P0,Core semiconductor theme ETF
+SOXX,iShares Semiconductor ETF,安硕半导体ETF,etf,semiconductor_etf,P0,Core semiconductor theme ETF
+IGV,iShares Expanded Tech-Software Sector ETF,安硕扩展科技软件ETF,etf,software_etf,P1,Software sector ETF
+XBI,SPDR S&P Biotech ETF,SPDR标普生物科技ETF,etf,biotech_etf,P2,High volatility biotech ETF
+IBIT,iShares Bitcoin Trust ETF,安硕比特币信托ETF,etf,alternative_asset_etf,P2,Bitcoin exposure proxy
+AAPL,Apple,苹果,stock,core_tech,P0,Mega cap core technology stock
+MSFT,Microsoft,微软,stock,core_tech,P0,Cloud and AI core stock
+NVDA,NVIDIA,英伟达,stock,ai_semiconductor,P0,AI trading core stock
+AMZN,Amazon,亚马逊,stock,cloud_consumer_platform,P0,Ecommerce and cloud core stock
+GOOGL,Alphabet,谷歌,stock,internet_platform,P0,Search and cloud platform stock
+META,Meta Platforms,Meta平台,stock,internet_platform,P0,Advertising and AI platform stock
+TSLA,Tesla,特斯拉,stock,high_beta_leader,P1,High attention trading stock
+AVGO,Broadcom,博通,stock,semiconductor_infrastructure,P0,AI infrastructure core stock
+AMD,Advanced Micro Devices,超威半导体,stock,semiconductor,P0,CPU GPU and AI chip stock
+NFLX,Netflix,奈飞,stock,media_platform,P1,Streaming platform core stock
+ORCL,Oracle,甲骨文,stock,enterprise_software,P1,Cloud and database leader
+CRM,Salesforce,Salesforce,stock,saas,P1,Enterprise SaaS core stock
+JPM,JPMorgan Chase,摩根大通,stock,financials,P1,Bank sector representative
+BRK.B,Berkshire Hathaway,伯克希尔哈撒韦,stock,financials,P1,Large cap defensive financial stock
+COST,Costco,好市多,stock,consumer_defensive,P1,Defensive retail leader
+MU,Micron Technology,美光科技,stock,semiconductor_memory,P0,Memory chip focus stock
+TSM,Taiwan Semiconductor,台积电,stock,semiconductor_foundry,P0,Global foundry core stock
+ASML,ASML Holding,阿斯麦,stock,semiconductor_equipment,P0,Lithography equipment leader
+QCOM,Qualcomm,高通,stock,communication_chip,P1,Mobile chip leader
+ARM,Arm Holdings,Arm控股,stock,chip_ip,P1,AI ecosystem high attention stock
+MRVL,Marvell Technology,Marvell科技,stock,data_center_chip,P1,AI networking and custom chip stock
+AMAT,Applied Materials,应用材料,stock,semiconductor_equipment,P1,Semiconductor equipment core stock
+LRCX,Lam Research,泛林集团,stock,semiconductor_equipment,P1,Semiconductor equipment leader
+KLAC,KLA,科磊,stock,semiconductor_equipment,P1,Semiconductor inspection equipment leader
+TXN,Texas Instruments,德州仪器,stock,analog_chip,P1,Industrial and analog chip stock
+ADI,Analog Devices,亚德诺,stock,analog_chip,P1,High quality analog chip leader
+NXPI,NXP Semiconductors,恩智浦半导体,stock,auto_chip,P1,Automotive and industrial chip stock
+MCHP,Microchip Technology,微芯科技,stock,mcu,P2,Industrial chip chain supplement
+INTC,Intel,英特尔,stock,cpu_foundry,P2,Turnaround watch stock
+ANET,Arista Networks,Arista网络,stock,network_equipment,P1,AI data center networking stock
+PLTR,Palantir Technologies,Palantir,stock,data_ai_software,P1,High attention AI software stock
+SNOW,Snowflake,Snowflake,stock,data_cloud,P1,Data platform representative
+CRWD,CrowdStrike,CrowdStrike,stock,cybersecurity,P1,Cybersecurity core stock
+PANW,Palo Alto Networks,Palo Alto Networks,stock,cybersecurity,P1,Cybersecurity leader
+ZS,Zscaler,Zscaler,stock,cybersecurity,P2,Cloud security representative
+NET,Cloudflare,Cloudflare,stock,cloud_network,P2,High growth cloud network stock
+MDB,MongoDB,MongoDB,stock,database,P2,Developer ecosystem database stock
+DDOG,Datadog,Datadog,stock,observability,P2,Cloud operations core stock
+SHOP,Shopify,Shopify,stock,ecommerce_saas,P1,Merchant ecosystem core stock
+NOW,ServiceNow,ServiceNow,stock,enterprise_workflow,P1,High quality workflow software leader
+HUBS,HubSpot,HubSpot,stock,marketing_saas,P2,Mid large SaaS representative
+APP,AppLovin,AppLovin,stock,adtech,P2,High beta growth stock
+TEAM,Atlassian,Atlassian,stock,collaboration_software,P2,Developer collaboration platform
+UBER,Uber Technologies,优步,stock,platform_software,P1,Mobility platform leader
+INTU,Intuit,Intuit,stock,financial_software,P1,Stable financial software leader
+MELI,MercadoLibre,MercadoLibre,stock,ecommerce_fintech,P1,Latin America platform leader
+ABNB,Airbnb,Airbnb,stock,travel_platform,P1,Online lodging platform stock
+BKNG,Booking Holdings,Booking Holdings,stock,travel_platform,P1,Online travel platform leader
+RDDT,Reddit,Reddit,stock,community_platform,P2,New high attention platform stock
+DUOL,Duolingo,多邻国,stock,education_technology,P2,High growth consumer technology stock
+SPOT,Spotify,Spotify,stock,streaming_platform,P2,Audio platform representative
+PYPL,PayPal,PayPal,stock,payments,P2,Payment incumbent stock
+COIN,Coinbase,Coinbase,stock,crypto_platform,P2,High volatility crypto platform
+HOOD,Robinhood,Robinhood,stock,brokerage_platform,P2,Retail trading platform
+RBLX,Roblox,Roblox,stock,gaming_platform,P2,Young user platform stock
+AXP,American Express,美国运通,stock,payments_financials,P1,High quality consumer finance stock
+MA,Mastercard,万事达卡,stock,payments,P1,Global payment network core stock
+V,Visa,Visa,stock,payments,P1,Global payment network core stock
+CAVA,CAVA Group,CAVA集团,stock,restaurant_growth,P2,Recent high attention restaurant growth stock
+CMG,Chipotle Mexican Grill,Chipotle,stock,restaurant_growth,P1,Consumer growth leader
+GE,GE Aerospace,GE航空航天,stock,industrial_aerospace,P1,Industrial leader
+RTX,RTX Corporation,RTX公司,stock,defense_aerospace,P1,Defense sector representative
+LMT,Lockheed Martin,洛克希德马丁,stock,defense,P1,Defense leader
+NOC,Northrop Grumman,诺斯罗普格鲁曼,stock,defense,P2,Defense supplement
+RKLB,Rocket Lab,Rocket Lab,stock,space,P2,Space theme proxy
+ASTS,AST SpaceMobile,AST SpaceMobile,stock,space_communications,P2,Satellite communication high attention stock
+LLY,Eli Lilly,礼来,stock,healthcare_pharma,P0,High growth healthcare core stock
+UNH,UnitedHealth Group,联合健康,stock,healthcare_services,P1,Healthcare weight leader
+ABBV,AbbVie,艾伯维,stock,pharma,P1,Large pharma representative
+ISRG,Intuitive Surgical,直觉外科,stock,medical_device,P1,Surgical robotics leader
+VRTX,Vertex Pharmaceuticals,Vertex制药,stock,biopharma,P1,Innovative pharma representative
+XOM,Exxon Mobil,埃克森美孚,stock,energy,P1,Energy weight leader
+CVX,Chevron,雪佛龙,stock,energy,P1,Energy weight leader
+SLB,SLB,SLB,stock,oilfield_services,P2,Oilfield services representative
+CAT,Caterpillar,卡特彼勒,stock,industrial_machinery,P1,Cyclical industrial leader

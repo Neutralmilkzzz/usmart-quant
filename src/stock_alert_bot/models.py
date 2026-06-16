@@ -28,6 +28,7 @@ class ScannerStatus(str, Enum):
 class UniverseItem:
     symbol: str
     name: str
+    name_zh: str | None
     asset_type: str
     category: str
     watch_priority: str
@@ -62,7 +63,7 @@ class MarketStatus:
 
     @property
     def label(self) -> str:
-        return "Open" if self.is_open else "Closed"
+        return "开盘" if self.is_open else "休市"
 
 
 @dataclass
@@ -130,6 +131,7 @@ class Profile:
 class StockSnapshot:
     symbol: str
     name: str | None
+    name_zh: str | None
     asset_type: str | None
     watch_priority: str
     price: float | None = None
@@ -158,6 +160,7 @@ class StockSnapshot:
 class CandidateRecord:
     symbol: str
     name: str | None
+    name_zh: str | None
     watch_priority: str
     price: float
     day_change_pct: float

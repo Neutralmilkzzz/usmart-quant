@@ -39,5 +39,5 @@ class BotCommandHandler:
         try:
             result: ScanResult = self.scanner.run_scan(trigger="manual")
         except ScanAlreadyRunningError:
-            return ["Scan already running. Please wait."]
+            return ["扫描正在运行，请稍后再试。"]
         return format_scan_result(result, max_message_chars=self.max_message_chars)
