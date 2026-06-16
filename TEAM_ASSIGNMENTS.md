@@ -10,23 +10,24 @@
 
 ## 当前工作原则
 
-- 当前阶段暂停新增 coding，只写 doc
-- 现有代码先视为已完成样板，后续是否继续开发，等老板在容量刷新后再下达指令
+- 当前阶段先完成 V2 重构 PRD 和任务分配，暂不直接进入重构实现
+- 现有代码已通过 `48bac02` 和 `ed0b961` 保存为重构前检查点
 - 所有后续开发任务，以 `docs/work_docs/PRODUCT_ROADMAP_MVP_TO_V5.md` 为总路线图
-- 对外展示文案后续统一改为中文，但本轮只记录任务，不改代码
+- V2 的重点是拆出因子层和策略层，让后续研究能独立扩展
 
 ## 当前分工
 
 - 服部半藏：维护项目文档、分工文档、路线图文档和阶段进度；负责把老板口头决策落成文档，并维护 MVP 到 V5 的演进计划
-- 德川家康：当前不继续写代码，先以文档为主。开发执行的主参考文档为 `docs/work_docs/PRD_V1_US_STOCK_ALERT_BOT.md`、`docs/work_docs/V1_MVP_STRATEGY.md`、`docs/work_docs/TEST_PLAN_V1.md`、`docs/work_docs/PRODUCT_ROADMAP_MVP_TO_V5.md`。容量刷新后，再进入 V1 实装或中文化工作。
+- 德川家康：负责 Telegram / Discord 用户可见文案中文化。范围包括 `/scan`、`/status`、`/help`、扫描结果标题、状态提示、错误提示。不得改动策略、feed、状态机和股票池口径。
 - 丰臣秀吉：继续维护 Finnhub feed 能力文档，重点确认哪些字段已实测可用，哪些接口当前不可用。V1 只把 metric 字段作为上下文或后续研究材料，不要求参与当前排序策略。
-- 立花宗茂：继续维护 100 只美股观察池和 P0 / P1 / P2 分层。V1 只使用 P0 / P1；P2 暂不进入扫描。若有新增标的，需说明纳入理由和优先级。同时继续补充股票池维护文档，保证后续版本能稳定扩池。
+- 立花宗茂：负责 V2 因子层与策略层解耦重构。主参考文档为 `docs/work_docs/PRD_V2_FACTOR_STRATEGY_REFACTOR.md`。目标是把当前 `day_change_pct` Top N 规则迁移成独立 strategy，并新增 factor registry / strategy registry，使后续新增因子或策略不需要改 scanner 主流程。
 
 ## 工作进度
 
 - 丰臣秀吉：已完成 Finnhub API 首轮连通性验证，并完成“字段可实现因子”整理；结果已整理至 `doc/丰臣秀吉/芬虎接口连通结果报告.md`、`doc/丰臣秀吉/芬虎接口可取字段清单.md` 和 `doc/丰臣秀吉/芬虎字段因子实现清单.md`
 - 服部半藏：已补充 V1 裸跑策略定义与 V1 测试计划，分别位于 `docs/work_docs/V1_MVP_STRATEGY.md` 和 `docs/work_docs/TEST_PLAN_V1.md`
 - 服部半藏：已新增版本演进路线图 `docs/work_docs/PRODUCT_ROADMAP_MVP_TO_V5.md`，用于定义后续从文档期进入开发期的顺序
+- 服部半藏：已在重构前提交当前代码检查点 `48bac02` 和中文化测试检查点 `ed0b961`，并新增 V2 重构 PRD `docs/work_docs/PRD_V2_FACTOR_STRATEGY_REFACTOR.md`
 
 ## V1 策略口径
 
@@ -54,6 +55,6 @@ V1 不做：
 ## 下一轮待触发任务
 
 - 任务 A：把 Telegram / Discord 输出文案从英文切到中文
-- 任务 B：把 PRD 拆成更细的开发任务单，逐项进入实现
-- 任务 C：根据实际 API 速率限制，决定 V1 的扫描节奏与缓存方案
-- 任务 D：决定 V2 是否引入更多 feed 或更复杂状态机
+- 任务 B：由立花宗茂按 V2 PRD 拆分因子层与策略层
+- 任务 C：把当前 `day_change_pct` 排序规则迁移为 `DayChangeTopNStrategy`
+- 任务 D：补因子层、策略层和 pipeline 回归测试

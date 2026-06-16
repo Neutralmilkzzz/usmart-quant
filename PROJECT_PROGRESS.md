@@ -2,14 +2,14 @@
 
 ## 当前阶段
 
-阶段名称：`文档冻结与版本规划阶段`
+阶段名称：`V2 架构重构规划阶段`
 
-当前目标不是继续写主程序，而是先把以下文档与阶段边界固化：
+当前目标不是直接改代码，而是先把 V2 重构边界固化：
 
-1. 当前策略边界确认
-2. 当前版本边界确认
-3. MVP 到 V5 演进计划落地
-4. 团队下一轮任务口径统一
+1. 保存重构前代码检查点
+2. 明确五层架构边界
+3. 写出 V2 因子层与策略层解耦 PRD
+4. 将重构任务分配给立花宗茂
 
 ## 当前结论
 
@@ -19,8 +19,10 @@
 - 当前无法正常 `git push`，原因是到 GitHub 的 HTTPS 连接被重置
 - `.env/` 已加入 `.gitignore`
 - Finnhub API Key 已保存到本地 `.env/finnhub.env`
-- 现阶段按老板指令，暂停新增 coding，只继续写 doc
-- 后续要把 Bot 输出文案从英文改为中文，但本轮不改代码
+- 重构前代码检查点已提交：`48bac02` `Checkpoint V1 localized bot snapshot`
+- 重构前中文化测试检查点已提交：`ed0b961` `Checkpoint localization tests before V2 refactor`
+- V2 重构方向已确定：拆出 Universe / Feed / Factor / Strategy / Delivery 五层
+- 德川家康负责中文化，立花宗茂负责 V2 因子层与策略层重构
 
 ## 已完成事项
 
@@ -30,6 +32,7 @@
 - `TEAM_ASSIGNMENTS.md`
 - `README.md`
 - `docs/work_docs/PRODUCT_ROADMAP_MVP_TO_V5.md`
+- `docs/work_docs/PRD_V2_FACTOR_STRATEGY_REFACTOR.md`
 
 ### 2. uSMART / Futu OpenAPI 资料落地
 
@@ -96,25 +99,26 @@
 
 ### 立花宗茂
 
-- 整理“筛选所有美股自选股”的文档
-- 明确股票池来源、筛选口径、必要字段与输出结构
+- 负责 V2 因子层与策略层解耦重构
+- 主参考文档：`docs/work_docs/PRD_V2_FACTOR_STRATEGY_REFACTOR.md`
+- 目标：后续新增因子或策略时，不需要改 scanner 主流程
 
 ## 当前未完成事项
 
-1. 把“英文改中文”的范围拆成可执行任务
-2. 复核现有 PRD 与现有代码是否完全一致
-3. 等容量恢复后决定是否继续推进 V1 落地
-4. 明确 V2 到 V5 的进入条件
-5. 视网络情况决定何时再尝试 push 到 GitHub
+1. 德川家康完成 Telegram / Discord 输出中文化
+2. 立花宗茂按 V2 PRD 拆出 factor registry
+3. 立花宗茂按 V2 PRD 拆出 strategy registry
+4. 将当前 Top 10 裸跑规则迁移为 `DayChangeTopNStrategy`
+5. 补因子层、策略层和 pipeline 回归测试
 
 ## 下一步建议
 
 优先级从高到低：
 
-1. 冻结当前路线图 `docs/work_docs/PRODUCT_ROADMAP_MVP_TO_V5.md`
-2. 把中文化任务写入正式任务列表
-3. 等容量恢复后，先做中文化与 V1 稳定化
-4. 之后再决定是否进入 V2 功能增强
+1. 德川家康先完成中文化，避免用户侧输出继续混杂英文
+2. 立花宗茂按 V2 PRD 先建接口，不立刻大规模删除旧代码
+3. 用回归测试锁住 V1 排序结果
+4. 再迁移 scanner 到 factor + strategy pipeline
 
 ## 最新阶段更新
 
@@ -137,19 +141,25 @@
 
 该文档用于说明本项目如何从 MVP 演进到 V1、V2、V3、V4、V5，并明确当前先暂停 coding、只维护文档。
 
+已新增 V2 重构 PRD：
+
+- `docs/work_docs/PRD_V2_FACTOR_STRATEGY_REFACTOR.md`
+
+该文档明确 V2 的核心目标是拆出因子层与策略层，让后续新增因子或策略时不需要改 scanner 主流程。V2 不改变当前 `day_change_pct` Top 10 策略口径，不引入回测，不引入自动交易。
+
 ## Git 回滚定位说明
 
 如果未来发生 Git 回滚，判断当前处于哪个阶段时，优先查看本文件。
 
 若本文件存在，且内容与下列特征一致，则说明项目仍处于：
 
-`文档冻结与版本规划阶段`
+`V2 架构重构规划阶段`
 
 该阶段的特征是：
 
-- 本轮不继续加代码
-- 已有代码可视为样板或已完成底稿
-- 当前优先保障版本边界、任务边界和中文化计划清晰
+- 重构前检查点已经存在：`48bac02` 和 `ed0b961`
+- V2 PRD 已存在：`docs/work_docs/PRD_V2_FACTOR_STRATEGY_REFACTOR.md`
+- 当前计划先拆因子层和策略层，而不是新增复杂策略
 
 ## 2026-06-16 德川家康开发更新
 
