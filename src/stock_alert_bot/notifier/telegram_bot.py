@@ -29,6 +29,7 @@ class TelegramNotifier:
         commands = [
             {"command": "scan", "description": "立即执行一次扫描"},
             {"command": "status", "description": "查看 Bot 和扫描器状态"},
+            {"command": "progress", "description": "查看当前扫描进度"},
             {"command": "help", "description": "查看命令列表"},
         ]
         self._post("setMyCommands", {"commands": json.dumps(commands)})

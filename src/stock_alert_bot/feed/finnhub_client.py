@@ -6,6 +6,8 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from collections import deque
+from threading import Lock
 from typing import Any
 
 from stock_alert_bot.models import MarketStatus, Profile, Quote, StockSnapshot, UniverseItem, utc_now
@@ -27,6 +29,7 @@ class FinnhubClient:
         timeout_seconds: float = 10,
         max_retries: int = 3,
         retry_backoff_seconds: float = 1,
+        calls_per_minute: int = 60,
     ) -> None:
         if not api_key:
             raise ValueError("FINNHUB_API_KEY is required.")
@@ -34,6 +37,9 @@ class FinnhubClient:
         self.timeout_seconds = timeout_seconds
         self.max_retries = max_retries
         self.retry_backoff_seconds = retry_backoff_seconds
+        self.calls_per_minute = calls_per_minute
+        self._request_timestamps: deque[float] = deque()
+        self._rate_limit_lock = Lock()
 
     def get_market_status(self, exchange: str = "US") -> MarketStatus:
         payload = self._get_json("/stock/market-status", {"exchange": exchange})
@@ -108,6 +114,7 @@ class FinnhubClient:
         )
 
     def _get_json(self, endpoint: str, params: dict[str, Any]) -> dict[str, Any]:
+        self._wait_for_rate_limit_slot()
         query = dict(params)
         query["token"] = self.api_key
         url = f"{self.BASE_URL}{endpoint}?{urllib.parse.urlencode(query)}"
@@ -140,6 +147,24 @@ class FinnhubClient:
         if attempt >= self.max_retries:
             return
         time.sleep(self.retry_backoff_seconds * (2 ** (attempt - 1)))
+
+    def _wait_for_rate_limit_slot(self) -> None:
+        if self.calls_per_minute <= 0:
+            return
+
+        window_seconds = 60.0
+        while True:
+            sleep_for = 0.0
+            now = time.monotonic()
+            with self._rate_limit_lock:
+                while self._request_timestamps and now - self._request_timestamps[0] >= window_seconds:
+                    self._request_timestamps.popleft()
+                if len(self._request_timestamps) < self.calls_per_minute:
+                    self._request_timestamps.append(now)
+                    return
+                sleep_for = window_seconds - (now - self._request_timestamps[0])
+            if sleep_for > 0:
+                time.sleep(sleep_for)
 
 
 def _optional_float(value: Any) -> float | None:

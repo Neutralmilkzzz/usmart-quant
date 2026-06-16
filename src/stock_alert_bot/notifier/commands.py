@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 from stock_alert_bot.models import ScanResult
-from stock_alert_bot.notifier.formatter import format_scan_result, format_status_text, help_text
+from stock_alert_bot.notifier.formatter import (
+    format_progress_text,
+    format_scan_result,
+    format_status_text,
+    help_text,
+)
 from stock_alert_bot.scanner import StockScanner
 from stock_alert_bot.state.machine import ScanAlreadyRunningError, StateMachine
 
@@ -31,6 +36,8 @@ class BotCommandHandler:
                     scheduler_enabled=self.scheduler_enabled,
                 )
             ]
+        if normalized in {"/progress", "progress"}:
+            return [format_progress_text(self.state_machine.snapshot())]
         if normalized in {"/scan", "scan"}:
             return self.run_scan()
         return [help_text()]

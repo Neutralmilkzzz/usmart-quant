@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pytest
 
+from stock_alert_bot.feed import finnhub_client as finnhub_client_module
 from stock_alert_bot.feed.finnhub_client import FinnhubAPIError, FinnhubClient
 from stock_alert_bot.models import UniverseItem
 
@@ -87,3 +88,26 @@ def test_finnhub_quote_missing_price_does_not_crash():
 
     assert snapshot.price is None
     assert snapshot.day_change_pct == 1.2
+
+
+def test_finnhub_rate_limiter_caps_requests_per_minute(monkeypatch):
+    current = {"value": 0.0}
+
+    def fake_monotonic():
+        return current["value"]
+
+    def fake_sleep(seconds: float):
+        current["value"] += seconds
+
+    monkeypatch.setattr(finnhub_client_module.time, "monotonic", fake_monotonic)
+    monkeypatch.setattr(finnhub_client_module.time, "sleep", fake_sleep)
+
+    client = FinnhubClient("test-token", max_retries=1, calls_per_minute=2)
+
+    client._wait_for_rate_limit_slot()
+    client._wait_for_rate_limit_slot()
+    assert len(client._request_timestamps) == 2
+
+    client._wait_for_rate_limit_slot()
+
+    assert current["value"] == pytest.approx(60.0)

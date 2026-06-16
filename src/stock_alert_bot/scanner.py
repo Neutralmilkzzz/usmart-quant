@@ -56,6 +56,7 @@ class StockScanner:
                 enabled_priorities=self.enabled_priorities,
             )
             universe_count = len(universe)
+            self.state_machine.update_progress(total=universe_count, processed=0, current_symbol=None)
 
             try:
                 market_status = self.feed_client.get_market_status("US")
@@ -64,7 +65,12 @@ class StockScanner:
                 LOGGER.warning(message)
                 errors.append(message)
 
-            for item in universe:
+            for index, item in enumerate(universe, start=1):
+                self.state_machine.update_progress(
+                    total=universe_count,
+                    processed=index - 1,
+                    current_symbol=item.symbol,
+                )
                 try:
                     snapshots.append(self.feed_client.fetch_snapshot(item))
                 except Exception as exc:  # noqa: BLE001
@@ -80,6 +86,11 @@ class StockScanner:
                             errors=[message],
                         )
                     )
+                self.state_machine.update_progress(
+                    total=universe_count,
+                    processed=index,
+                    current_symbol=item.symbol,
+                )
 
             candidates = select_top_candidates(
                 snapshots,

@@ -28,6 +28,7 @@ class FinnhubConfig:
     timeout_seconds: float = 10
     max_retries: int = 3
     retry_backoff_seconds: float = 1
+    calls_per_minute: int = 60
 
 
 @dataclass
@@ -150,6 +151,9 @@ def _apply_mapping(config: AppConfig, data: dict[str, Any]) -> None:
         config.finnhub.max_retries = int(finnhub.get("max_retries", config.finnhub.max_retries))
         config.finnhub.retry_backoff_seconds = float(
             finnhub.get("retry_backoff_seconds", config.finnhub.retry_backoff_seconds)
+        )
+        config.finnhub.calls_per_minute = int(
+            finnhub.get("calls_per_minute", config.finnhub.calls_per_minute)
         )
 
     notifier = data.get("notifier") or {}

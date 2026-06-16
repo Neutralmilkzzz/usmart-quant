@@ -111,3 +111,20 @@ def test_command_handler_reports_busy_scan(tmp_path):
     )
 
     assert handler.handle_command("/scan") == ["扫描正在运行，请稍后再试。"]
+
+
+def test_command_handler_reports_scan_progress(tmp_path):
+    state_machine = StateMachine(StateStore(tmp_path / "state.json"))
+    assert state_machine.try_start(trigger="manual") is not None
+    state_machine.update_progress(total=12, processed=3, current_symbol="S3")
+
+    handler = BotCommandHandler(
+        scanner=SlowScanner(),
+        state_machine=state_machine,
+        scheduler_enabled=True,
+    )
+
+    [message] = handler.handle_command("/progress")
+
+    assert "进度：3/12 (25.0%)" in message
+    assert "当前标的：S3" in message

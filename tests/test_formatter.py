@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 from stock_alert_bot.models import CandidateRecord, MarketStatus, ScanResult, ScannerStatus, utc_now
-from stock_alert_bot.notifier.formatter import format_scan_result, format_status_text, help_text
+from stock_alert_bot.notifier.formatter import (
+    format_progress_text,
+    format_scan_result,
+    format_status_text,
+    help_text,
+)
 
 
 def make_result(candidates: list[CandidateRecord]) -> ScanResult:
@@ -73,10 +78,30 @@ def test_status_and_help_text():
             "scanner_state": "IDLE",
             "last_scan_status": "SUCCESS",
             "last_result_count": 10,
+            "current_scan_total": 0,
+            "current_scan_processed": 0,
         },
         scheduler_enabled=True,
     )
 
     assert "定时扫描：已启用" in status
     assert "上次扫描状态：成功" in status
-    assert "/scan - 立即执行一次扫描" in help_text()
+    assert "当前进度：0/0 (0%)" in status
+    assert "/progress - 查看当前扫描进度" in help_text()
+
+
+def test_progress_text_for_running_scan():
+    progress = format_progress_text(
+        {
+            "scanner_state": "RUNNING",
+            "current_scan_total": 20,
+            "current_scan_processed": 5,
+            "current_scan_symbol": "NVDA",
+            "last_scan_started_at": "2026-06-16T10:00:00+00:00",
+            "last_scan_status": "PARTIAL_SUCCESS",
+        }
+    )
+
+    assert "扫描器：运行中" in progress
+    assert "进度：5/20 (25.0%)" in progress
+    assert "当前标的：NVDA" in progress

@@ -45,6 +45,7 @@ def main() -> None:
         timeout_seconds=config.finnhub.timeout_seconds,
         max_retries=config.finnhub.max_retries,
         retry_backoff_seconds=config.finnhub.retry_backoff_seconds,
+        calls_per_minute=config.finnhub.calls_per_minute,
     )
     state_machine = StateMachine(StateStore(config.resolve_path(config.scanner.state_path)))
     scanner = StockScanner(

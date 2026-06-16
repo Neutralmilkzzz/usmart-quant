@@ -35,6 +35,8 @@ def format_status_text(state: dict[str, object], *, scheduler_enabled: bool) -> 
             "Bot：在线",
             f"定时扫描：{'已启用' if scheduler_enabled else '未启用'}",
             f"扫描器：{_format_status(str(state.get('scanner_state', 'UNKNOWN')))}",
+            f"当前进度：{_format_progress(state)}",
+            f"当前标的：{state.get('current_scan_symbol') or '无'}",
             f"上次扫描开始：{state.get('last_scan_started_at') or '从未运行'}",
             f"上次扫描结束：{state.get('last_scan_finished_at') or '从未运行'}",
             f"上次扫描状态：{_format_status(str(state.get('last_scan_status') or 'never'))}",
@@ -44,11 +46,26 @@ def format_status_text(state: dict[str, object], *, scheduler_enabled: bool) -> 
     )
 
 
+def format_progress_text(state: dict[str, object]) -> str:
+    scanner_state = str(state.get("scanner_state", "UNKNOWN"))
+    return "\n".join(
+        [
+            "当前扫描进度",
+            f"扫描器：{_format_status(scanner_state)}",
+            f"进度：{_format_progress(state)}",
+            f"当前标的：{state.get('current_scan_symbol') or '无'}",
+            f"上次扫描开始：{state.get('last_scan_started_at') or '从未运行'}",
+            f"上次扫描状态：{_format_status(str(state.get('last_scan_status') or 'never'))}",
+        ]
+    )
+
+
 def help_text() -> str:
     return "\n".join(
         [
             "/scan - 立即执行一次扫描",
             "/status - 查看 Bot 和扫描器状态",
+            "/progress - 查看当前扫描进度",
             "/help - 查看命令列表",
         ]
     )
@@ -128,3 +145,12 @@ def _format_status(value: str) -> str:
         "never": "从未运行",
     }
     return labels.get(value, value)
+
+
+def _format_progress(state: dict[str, object]) -> str:
+    total = int(state.get("current_scan_total", 0) or 0)
+    processed = int(state.get("current_scan_processed", 0) or 0)
+    if total <= 0:
+        return "0/0 (0%)"
+    percent = processed / total * 100
+    return f"{processed}/{total} ({percent:.1f}%)"

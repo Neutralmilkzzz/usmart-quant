@@ -34,11 +34,29 @@ class StateMachine:
                     "scanner_state": ScannerStatus.RUNNING.value,
                     "last_scan_trigger": trigger,
                     "last_scan_started_at": now.isoformat(),
+                    "current_scan_total": 0,
+                    "current_scan_processed": 0,
+                    "current_scan_symbol": None,
                     "last_error": None,
                 }
             )
             self._persist()
             return now
+
+    def update_progress(
+        self,
+        *,
+        total: int | None = None,
+        processed: int | None = None,
+        current_symbol: str | None = None,
+    ) -> None:
+        with self._lock:
+            if total is not None:
+                self._state["current_scan_total"] = total
+            if processed is not None:
+                self._state["current_scan_processed"] = processed
+            self._state["current_scan_symbol"] = current_symbol
+            self._persist()
 
     def finish(
         self,
@@ -57,6 +75,9 @@ class StateMachine:
                     "last_scan_finished_at": finished.isoformat(),
                     "last_scan_status": status.value,
                     "last_result_count": result_count,
+                    "current_scan_total": 0,
+                    "current_scan_processed": 0,
+                    "current_scan_symbol": None,
                     "last_error": error,
                 }
             )
