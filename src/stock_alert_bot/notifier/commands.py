@@ -1,26 +1,30 @@
 from __future__ import annotations
 
-from stock_alert_bot.models import ScanResult
+from typing import Protocol
+
 from stock_alert_bot.notifier.formatter import (
     format_progress_text,
-    format_scan_result,
     format_status_text,
     help_text,
 )
-from stock_alert_bot.scanner import StockScanner
-from stock_alert_bot.state.machine import ScanAlreadyRunningError, StateMachine
+from stock_alert_bot.state.machine import StateMachine
+
+
+class ScanStarter(Protocol):
+    def start_scan(self, *, trigger: str) -> bool:
+        ...
 
 
 class BotCommandHandler:
     def __init__(
         self,
         *,
-        scanner: StockScanner,
+        scan_starter: ScanStarter,
         state_machine: StateMachine,
         scheduler_enabled: bool,
         max_message_chars: int = 3900,
     ) -> None:
-        self.scanner = scanner
+        self.scan_starter = scan_starter
         self.state_machine = state_machine
         self.scheduler_enabled = scheduler_enabled
         self.max_message_chars = max_message_chars
@@ -43,8 +47,7 @@ class BotCommandHandler:
         return [help_text()]
 
     def run_scan(self) -> list[str]:
-        try:
-            result: ScanResult = self.scanner.run_scan(trigger="manual")
-        except ScanAlreadyRunningError:
+        started = self.scan_starter.start_scan(trigger="manual")
+        if not started:
             return ["扫描正在运行，请稍后再试。"]
-        return format_scan_result(result, max_message_chars=self.max_message_chars)
+        return ["已开始扫描，可用 /progress 查看进度。扫描完成后会自动推送结果。"]
