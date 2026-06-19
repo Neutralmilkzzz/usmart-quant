@@ -2,11 +2,14 @@ from __future__ import annotations
 
 from stock_alert_bot.models import CandidateRecord, MarketStatus, ScanResult, ScannerStatus, utc_now
 from stock_alert_bot.notifier.formatter import (
+    format_holdings_text,
+    format_position_added,
     format_progress_text,
     format_scan_result,
     format_status_text,
     help_text,
 )
+from stock_alert_bot.portfolio import Position, PositionSnapshot
 
 
 def make_result(candidates: list[CandidateRecord]) -> ScanResult:
@@ -105,3 +108,32 @@ def test_progress_text_for_running_scan():
     assert "扫描器：运行中" in progress
     assert "进度：5/20 (25.0%)" in progress
     assert "当前标的：NVDA" in progress
+
+
+def test_position_and_holdings_formatters():
+    position = Position(
+        symbol="SOXX",
+        name="iShares Semiconductor ETF",
+        asset_type="etf",
+        buy_date="2026-06-19",
+        buy_price=200,
+        invested_amount=100,
+        estimated_shares=0.5,
+    )
+    added = format_position_added(position)
+    holdings = format_holdings_text(
+        [
+            PositionSnapshot(
+                position=position,
+                current_price=250,
+                day_change_pct=2.0,
+            )
+        ]
+    )
+
+    assert "已加入持仓观察" in added
+    assert "估算份额：0.500000" in added
+    assert "当前价 250.00" in holdings
+    assert "今日涨幅 +2.00%" in holdings
+    assert "整体涨幅 +25.00%" in holdings
+    assert "总盈利 25.00 USD" in holdings

@@ -7,6 +7,7 @@ from stock_alert_bot.models import MarketStatus, StockSnapshot, UniverseItem
 from stock_alert_bot.notifier.base import FakeNotifier, NotifierManager
 from stock_alert_bot.notifier.commands import BotCommandHandler
 from stock_alert_bot.notifier.formatter import format_scan_result
+from stock_alert_bot.portfolio import Position, PositionSnapshot
 from stock_alert_bot.scan_dispatcher import ScanDispatcher
 from stock_alert_bot.scanner import StockScanner
 from stock_alert_bot.state.machine import StateMachine
@@ -50,6 +51,36 @@ class FakeScanStarter:
     def start_scan(self, *, trigger: str) -> bool:
         self.triggers.append(trigger)
         return self.started
+
+
+class FakePositionService:
+    def add_position(self, *, symbol, buy_price, invested_amount, buy_date=None, notes=""):
+        return Position(
+            symbol=symbol.upper(),
+            name="Test Holding",
+            asset_type="stock",
+            buy_date=buy_date or "2026-06-19",
+            buy_price=buy_price,
+            invested_amount=invested_amount,
+            estimated_shares=invested_amount / buy_price,
+        )
+
+    def list_snapshots(self):
+        return [
+            PositionSnapshot(
+                position=Position(
+                    symbol="QQQ",
+                    name="Invesco QQQ Trust",
+                    asset_type="etf",
+                    buy_date="2026-06-19",
+                    buy_price=400,
+                    invested_amount=800,
+                    estimated_shares=2,
+                ),
+                current_price=500,
+                day_change_pct=1.5,
+            )
+        ]
 
 
 class BlockingFeed(FakeFeed):
@@ -201,3 +232,23 @@ def test_progress_remains_available_while_async_scan_runs(tmp_path):
         time.sleep(0.05)
 
     assert notifier.messages
+
+
+def test_command_handler_adds_position_and_lists_holdings(tmp_path):
+    handler = BotCommandHandler(
+        scan_starter=FakeScanStarter(),
+        state_machine=StateMachine(StateStore(tmp_path / "state.json")),
+        scheduler_enabled=True,
+        position_service=FakePositionService(),
+    )
+
+    [add_message] = handler.handle_command("/position_add qqq 400 800")
+    [holdings_message] = handler.handle_command("/holdings")
+
+    assert "已加入持仓观察" in add_message
+    assert "QQQ" in add_message
+    assert "买入价：400.00 USD" in add_message
+    assert "当前价 500.00" in holdings_message
+    assert "今日涨幅 +1.50%" in holdings_message
+    assert "整体涨幅 +25.00%" in holdings_message
+    assert "总盈利 200.00 USD" in holdings_message

@@ -45,6 +45,7 @@ class DiscordNotifier:
             {"name": "scan", "type": 1, "description": "立即执行一次扫描"},
             {"name": "status", "type": 1, "description": "查看 Bot 和扫描器状态"},
             {"name": "progress", "type": 1, "description": "查看当前扫描进度"},
+            {"name": "holdings", "type": 1, "description": "查询持仓观察盈亏"},
             {"name": "help", "type": 1, "description": "查看命令列表"},
         ]
         if self.guild_id:
@@ -87,6 +88,10 @@ class DiscordNotifier:
         @tree.command(name="progress", description="查看当前扫描进度", guild=guild)
         async def progress(interaction: discord.Interaction) -> None:
             await _send_response(interaction, "/progress")
+
+        @tree.command(name="holdings", description="查询持仓观察盈亏", guild=guild)
+        async def holdings(interaction: discord.Interaction) -> None:
+            await _send_response(interaction, "/holdings")
 
         @tree.command(name="help", description="查看命令列表", guild=guild)
         async def help_command(interaction: discord.Interaction) -> None:

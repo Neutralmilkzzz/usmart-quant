@@ -57,7 +57,8 @@ V1 只做：
 - 过滤无价格或无 `day_change_pct` 的标的
 - 按 `day_change_pct` 降序排序，P0 同分优先，再按市值同分优先
 - 输出 Top 10，并通过 Telegram / Discord 推送
-- 支持 `/scan`、`/status`、`/help`
+- 支持 `/scan`、`/status`、`/progress`、`/position_add`、`/holdings`、`/help`
+- 支持手动录入持仓观察，并用 Finnhub quote 查询当前价格、今日涨幅、整体涨幅和总盈利
 
 V1 不做回测、beta、多因子 composite score、K 线技术指标和自动交易。
 
@@ -91,6 +92,27 @@ python -m stock_alert_bot.app --scan-once --console
 ```powershell
 python -m stock_alert_bot.app
 ```
+
+### Telegram / Discord 命令
+
+```text
+/scan - 立即执行一次扫描
+/status - 查看 Bot 和扫描器状态
+/progress - 查看当前扫描进度
+/position_add SYMBOL BUY_PRICE AMOUNT - 添加持仓观察
+/holdings - 查询持仓观察盈亏
+/help - 查看命令列表
+```
+
+持仓观察示例：
+
+```text
+/position_add QQQ 450 1000
+/position_add SOXX 250 100
+/holdings
+```
+
+`/position_add` 会先通过当前 feed 校验 symbol 并获取有效现价。标的不在 `data/universe_100.csv` 中也可以录入，只要 feed 能识别并返回有效 quote。持仓数据默认写入 `runtime/positions.json`。
 
 ### 部署
 

@@ -30,6 +30,8 @@ class TelegramNotifier:
             {"command": "scan", "description": "立即执行一次扫描"},
             {"command": "status", "description": "查看 Bot 和扫描器状态"},
             {"command": "progress", "description": "查看当前扫描进度"},
+            {"command": "position_add", "description": "添加持仓观察"},
+            {"command": "holdings", "description": "查询持仓观察盈亏"},
             {"command": "help", "description": "查看命令列表"},
         ]
         self._post("setMyCommands", {"commands": json.dumps(commands)})

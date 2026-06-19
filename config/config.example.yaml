@@ -8,6 +8,9 @@ scanner:
   state_path: runtime/state.json
   last_scan_path: runtime/last_scan.json
 
+portfolio:
+  positions_path: runtime/positions.json
+
 filters:
   require_price: true
   require_day_change_pct: true

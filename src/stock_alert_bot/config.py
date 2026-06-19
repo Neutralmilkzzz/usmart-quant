@@ -17,6 +17,11 @@ class ScannerConfig:
 
 
 @dataclass
+class PortfolioConfig:
+    positions_path: Path = Path("runtime/positions.json")
+
+
+@dataclass
 class FilterConfig:
     require_price: bool = True
     require_day_change_pct: bool = True
@@ -48,6 +53,7 @@ class NotifierConfig:
 class AppConfig:
     project_root: Path
     scanner: ScannerConfig = field(default_factory=ScannerConfig)
+    portfolio: PortfolioConfig = field(default_factory=PortfolioConfig)
     filters: FilterConfig = field(default_factory=FilterConfig)
     finnhub: FinnhubConfig = field(default_factory=FinnhubConfig)
     notifier: NotifierConfig = field(default_factory=NotifierConfig)
@@ -141,6 +147,12 @@ def _apply_mapping(config: AppConfig, data: dict[str, Any]) -> None:
         )
         config.filters.require_day_change_pct = bool(
             filters.get("require_day_change_pct", config.filters.require_day_change_pct)
+        )
+
+    portfolio = data.get("portfolio") or {}
+    if portfolio:
+        config.portfolio.positions_path = Path(
+            portfolio.get("positions_path", config.portfolio.positions_path)
         )
 
     finnhub = data.get("finnhub") or {}

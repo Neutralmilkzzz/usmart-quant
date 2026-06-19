@@ -14,6 +14,7 @@ from stock_alert_bot.notifier.commands import BotCommandHandler
 from stock_alert_bot.notifier.discord_bot import DiscordNotifier
 from stock_alert_bot.notifier.formatter import format_scan_result
 from stock_alert_bot.notifier.telegram_bot import TelegramNotifier, TelegramPollingBot
+from stock_alert_bot.portfolio import PositionService, PositionStore
 from stock_alert_bot.scan_dispatcher import ScanDispatcher
 from stock_alert_bot.scanner import StockScanner
 from stock_alert_bot.scheduler.runner import SchedulerRunner
@@ -64,6 +65,10 @@ def main() -> None:
         notifier_manager=notifier_manager,
         max_message_chars=config.notifier.max_message_chars,
     )
+    position_service = PositionService(
+        store=PositionStore(config.resolve_path(config.portfolio.positions_path)),
+        feed_client=feed_client,
+    )
 
     if args.scan_once:
         result = scanner.run_scan(trigger="manual")
@@ -79,6 +84,7 @@ def main() -> None:
         scan_starter=scan_dispatcher,
         state_machine=state_machine,
         scheduler_enabled=scheduler_enabled,
+        position_service=position_service,
         max_message_chars=config.notifier.max_message_chars,
     )
 

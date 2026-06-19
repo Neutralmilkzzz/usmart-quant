@@ -24,6 +24,7 @@
 - V2 重构方向已确定：拆出 Universe / Feed / Factor / Strategy / Delivery 五层
 - 德川家康负责中文化，立花宗茂负责 V2 因子层与策略层重构
 - 已确认 Finnhub 免费额度为 `60 calls/min`，项目当前决定接受低频长扫描，不优先缩小股票池
+- 已新增持仓观察 MVP：支持 Telegram 命令录入持仓标的并查询当前价格、今日涨幅、整体涨幅和总盈利
 
 ## 已完成事项
 
@@ -156,6 +157,23 @@
 - `docs/work_docs/FINNHUB_RATE_LIMIT_PLAN.md`
 
 该文档明确当前项目对免费额度的处理原则不是缩池，而是接受低频长扫描，按 `55-60 calls/min` 约束设计节流、排队和缓存方案。
+
+## 2026-06-19 立花宗茂持仓观察更新
+
+已新增持仓观察 MVP：
+
+- 新增 `src/stock_alert_bot/portfolio.py`
+- 新增 `runtime/positions.json` 作为默认持仓观察存储文件
+- 新增 Telegram 命令 `/position_add SYMBOL BUY_PRICE AMOUNT`
+- 新增 Telegram / Discord 查询命令 `/holdings`
+- 录入时先通过当前 feed 校验 symbol，并要求能返回有效现价
+- 支持观察池外标的录入，例如 `QQQ`、`SOXX` 或其他当前 feed 可识别的 symbol
+- `/holdings` 一次性展示当前价、今日涨幅、买入价、现价、整体涨幅、当前市值和总盈利
+
+验证结果：
+
+- `python -m pytest tests\test_portfolio.py tests\test_formatter.py tests\test_scan_pipeline.py`：17 passed
+- `python -m compileall src tests`：通过
 
 ## Git 回滚定位说明
 

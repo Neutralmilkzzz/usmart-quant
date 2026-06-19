@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from stock_alert_bot.models import CandidateRecord, ScanResult
+from stock_alert_bot.portfolio import Position, PositionSnapshot
 
 
 def format_scan_result(result: ScanResult, *, max_message_chars: int = 3900) -> list[str]:
@@ -60,12 +61,60 @@ def format_progress_text(state: dict[str, object]) -> str:
     )
 
 
+def format_position_added(position: Position) -> str:
+    return "\n".join(
+        [
+            "已加入持仓观察",
+            f"标的：{position.symbol} {position.name or ''}".rstrip(),
+            f"买入价：{_format_price(position.buy_price)} {position.currency}",
+            f"投入金额：{_format_money(position.invested_amount, position.currency)}",
+            f"估算份额：{position.estimated_shares:.6f}",
+            f"买入日期：{position.buy_date}",
+        ]
+    )
+
+
+def format_holdings_text(snapshots: list[PositionSnapshot]) -> str:
+    if not snapshots:
+        return "当前没有持仓观察标的。用 /position_add SYMBOL BUY_PRICE INVESTED_AMOUNT 添加。"
+
+    lines = ["持仓观察"]
+    total_profit = 0.0
+    total_value = 0.0
+    for index, snapshot in enumerate(snapshots, start=1):
+        position = snapshot.position
+        total_profit += snapshot.total_profit
+        total_value += snapshot.current_value
+        lines.extend(
+            [
+                (
+                    f"{index}. {position.symbol} {position.name or ''} | 当前价 {_format_price(snapshot.current_price)} "
+                    f"| 今日涨幅 {_format_optional_percent(snapshot.day_change_pct)}"
+                ).rstrip(),
+                (
+                    f"   买入价 {_format_price(position.buy_price)} | 现价 {_format_price(snapshot.current_price)} "
+                    f"| 整体涨幅 {_format_percent(snapshot.total_return_pct)}"
+                ),
+                (
+                    f"   投入 {_format_money(position.invested_amount, position.currency)} "
+                    f"| 当前市值 {_format_money(snapshot.current_value, position.currency)} "
+                    f"| 总盈利 {_format_money(snapshot.total_profit, position.currency)}"
+                ),
+            ]
+        )
+    lines.append(f"合计当前市值：{_format_money(total_value, 'USD')}")
+    lines.append(f"合计总盈利：{_format_money(total_profit, 'USD')}")
+    return "\n".join(lines)
+
+
 def help_text() -> str:
     return "\n".join(
         [
             "/scan - 立即执行一次扫描",
             "/status - 查看 Bot 和扫描器状态",
             "/progress - 查看当前扫描进度",
+            "/position_add SYMBOL BUY_PRICE AMOUNT - 添加持仓观察",
+            "/holdings - 查询持仓观察盈亏",
             "/help - 查看命令列表",
         ]
     )
@@ -130,6 +179,16 @@ def _format_optional_number(value: float | None) -> str:
     if value is None:
         return "无"
     return f"{value:,.2f}"
+
+
+def _format_money(value: float, currency: str) -> str:
+    return f"{value:,.2f} {currency}"
+
+
+def _format_optional_percent(value: float | None) -> str:
+    if value is None:
+        return "无"
+    return _format_percent(value)
 
 
 def _format_status(value: str) -> str:
