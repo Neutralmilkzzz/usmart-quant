@@ -21,6 +21,7 @@ finnhub:
   timeout_seconds: 10
   max_retries: 3
   retry_backoff_seconds: 1
+  calls_per_minute: 55
 
 notifier:
   telegram_enabled: true
