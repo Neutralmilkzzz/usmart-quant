@@ -28,7 +28,7 @@ class FinnhubConfig:
     timeout_seconds: float = 10
     max_retries: int = 3
     retry_backoff_seconds: float = 1
-    calls_per_minute: int = 60
+    calls_per_minute: int = 55
 
 
 @dataclass
