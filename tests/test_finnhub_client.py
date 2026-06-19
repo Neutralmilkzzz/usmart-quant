@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import io
+import json
+import urllib.error
 import pytest
 
 from stock_alert_bot.feed import finnhub_client as finnhub_client_module
@@ -110,4 +113,54 @@ def test_finnhub_rate_limiter_caps_requests_per_minute(monkeypatch):
 
     client._wait_for_rate_limit_slot()
 
+    assert current["value"] == pytest.approx(60.0)
+
+
+def test_finnhub_retries_consume_rate_limit_slots(monkeypatch):
+    current = {"value": 0.0}
+    attempts = {"value": 0}
+
+    def fake_monotonic():
+        return current["value"]
+
+    def fake_sleep(seconds: float):
+        current["value"] += seconds
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return json.dumps({"c": 123, "t": 1}).encode("utf-8")
+
+    def fake_urlopen(request, timeout=0):
+        attempts["value"] += 1
+        if attempts["value"] == 1:
+            raise urllib.error.HTTPError(
+                request.full_url,
+                429,
+                "Too Many Requests",
+                hdrs=None,
+                fp=io.BytesIO(b""),
+            )
+        return FakeResponse()
+
+    monkeypatch.setattr(finnhub_client_module.time, "monotonic", fake_monotonic)
+    monkeypatch.setattr(finnhub_client_module.time, "sleep", fake_sleep)
+    monkeypatch.setattr(finnhub_client_module.urllib.request, "urlopen", fake_urlopen)
+
+    client = FinnhubClient(
+        "test-token",
+        max_retries=2,
+        retry_backoff_seconds=0,
+        calls_per_minute=1,
+    )
+
+    quote = client.get_quote("AAPL")
+
+    assert quote.price == 123
+    assert attempts["value"] == 2
     assert current["value"] == pytest.approx(60.0)
