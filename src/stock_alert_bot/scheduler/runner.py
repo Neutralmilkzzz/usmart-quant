@@ -4,10 +4,7 @@ import logging
 import threading
 from datetime import datetime, timedelta
 
-from stock_alert_bot.notifier.base import NotifierManager
-from stock_alert_bot.notifier.formatter import format_scan_result
-from stock_alert_bot.scanner import StockScanner
-from stock_alert_bot.state.machine import ScanAlreadyRunningError
+from stock_alert_bot.scan_dispatcher import ScanDispatcher
 
 LOGGER = logging.getLogger(__name__)
 
@@ -16,15 +13,11 @@ class SchedulerRunner:
     def __init__(
         self,
         *,
-        scanner: StockScanner,
-        notifier_manager: NotifierManager,
+        scan_dispatcher: ScanDispatcher,
         interval_minutes: int = 60,
-        max_message_chars: int = 3900,
     ) -> None:
-        self.scanner = scanner
-        self.notifier_manager = notifier_manager
+        self.scan_dispatcher = scan_dispatcher
         self.interval_minutes = interval_minutes
-        self.max_message_chars = max_message_chars
         self._stop_event = threading.Event()
         self._thread: threading.Thread | None = None
 
@@ -48,15 +41,11 @@ class SchedulerRunner:
             self.run_once()
 
     def run_once(self) -> None:
-        try:
-            result = self.scanner.run_scan(trigger="scheduled")
-        except ScanAlreadyRunningError:
+        started = self.scan_dispatcher.start_scan(trigger="scheduled")
+        if not started:
             LOGGER.info("scheduled_scan_skipped reason=already_running")
-            return
-        messages = format_scan_result(result, max_message_chars=self.max_message_chars)
-        notify_errors = self.notifier_manager.send_messages(messages)
-        if notify_errors:
-            LOGGER.error("scheduled_scan_notify_errors count=%s", len(notify_errors))
+        else:
+            LOGGER.info("scheduled_scan_dispatched")
 
     def _seconds_until_next_run(self) -> float:
         now = datetime.now()
