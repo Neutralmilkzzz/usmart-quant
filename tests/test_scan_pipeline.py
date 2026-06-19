@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import threading
 import time
 
 from stock_alert_bot.models import MarketStatus, StockSnapshot, UniverseItem
 from stock_alert_bot.notifier.base import FakeNotifier, NotifierManager
 from stock_alert_bot.notifier.commands import BotCommandHandler
 from stock_alert_bot.notifier.formatter import format_scan_result
+from stock_alert_bot.scan_dispatcher import ScanDispatcher
 from stock_alert_bot.scanner import StockScanner
 from stock_alert_bot.state.machine import StateMachine
 from stock_alert_bot.state.store import StateStore
@@ -38,6 +40,28 @@ class SlowScanner:
     def run_scan(self, *, trigger: str = "manual"):
         time.sleep(0.2)
         return None
+
+
+class FakeScanStarter:
+    def __init__(self, *, started: bool = True) -> None:
+        self.started = started
+        self.triggers: list[str] = []
+
+    def start_scan(self, *, trigger: str) -> bool:
+        self.triggers.append(trigger)
+        return self.started
+
+
+class BlockingFeed(FakeFeed):
+    def __init__(self, *, started_event: threading.Event, release_event: threading.Event) -> None:
+        super().__init__()
+        self.started_event = started_event
+        self.release_event = release_event
+
+    def fetch_snapshot(self, item: UniverseItem) -> StockSnapshot:
+        self.started_event.set()
+        self.release_event.wait(timeout=2)
+        return super().fetch_snapshot(item)
 
 
 def write_universe(path, count: int = 12) -> None:
@@ -95,17 +119,9 @@ def test_all_failure_scan_returns_failed(tmp_path):
 
 def test_command_handler_reports_busy_scan(tmp_path):
     state_machine = StateMachine(StateStore(tmp_path / "state.json"))
-    universe_path = tmp_path / "universe.csv"
-    write_universe(universe_path, count=1)
-    scanner = StockScanner(
-        universe_path=universe_path,
-        feed_client=FakeFeed(),
-        state_machine=state_machine,
-        last_scan_path=tmp_path / "last_scan.json",
-    )
-    assert state_machine.try_start(trigger="scheduled") is not None
+    starter = FakeScanStarter(started=False)
     handler = BotCommandHandler(
-        scanner=scanner,
+        scan_starter=starter,
         state_machine=state_machine,
         scheduler_enabled=True,
     )
@@ -119,7 +135,7 @@ def test_command_handler_reports_scan_progress(tmp_path):
     state_machine.update_progress(total=12, processed=3, current_symbol="S3")
 
     handler = BotCommandHandler(
-        scanner=SlowScanner(),
+        scan_starter=FakeScanStarter(),
         state_machine=state_machine,
         scheduler_enabled=True,
     )
@@ -128,3 +144,60 @@ def test_command_handler_reports_scan_progress(tmp_path):
 
     assert "进度：3/12 (25.0%)" in message
     assert "当前标的：S3" in message
+
+
+def test_command_handler_scan_returns_immediately_with_async_ack(tmp_path):
+    handler = BotCommandHandler(
+        scan_starter=FakeScanStarter(),
+        state_machine=StateMachine(StateStore(tmp_path / "state.json")),
+        scheduler_enabled=True,
+    )
+
+    started = time.monotonic()
+    [message] = handler.handle_command("/scan")
+    elapsed = time.monotonic() - started
+
+    assert elapsed < 0.1
+    assert "已开始扫描" in message
+
+
+def test_progress_remains_available_while_async_scan_runs(tmp_path):
+    universe_path = tmp_path / "universe.csv"
+    write_universe(universe_path, count=2)
+    state_machine = StateMachine(StateStore(tmp_path / "state.json"))
+    started_event = threading.Event()
+    release_event = threading.Event()
+    scanner = StockScanner(
+        universe_path=universe_path,
+        feed_client=BlockingFeed(started_event=started_event, release_event=release_event),
+        state_machine=state_machine,
+        last_scan_path=tmp_path / "last_scan.json",
+        top_n=10,
+    )
+    notifier = FakeNotifier()
+    dispatcher = ScanDispatcher(
+        scanner=scanner,
+        notifier_manager=NotifierManager([notifier]),
+    )
+    handler = BotCommandHandler(
+        scan_starter=dispatcher,
+        state_machine=state_machine,
+        scheduler_enabled=True,
+    )
+
+    [scan_message] = handler.handle_command("/scan")
+    assert "已开始扫描" in scan_message
+    assert started_event.wait(timeout=1)
+
+    [progress_message] = handler.handle_command("/progress")
+
+    assert "扫描器：运行中" in progress_message
+    assert "当前标的：" in progress_message
+
+    release_event.set()
+    for _ in range(20):
+        if notifier.messages:
+            break
+        time.sleep(0.05)
+
+    assert notifier.messages
