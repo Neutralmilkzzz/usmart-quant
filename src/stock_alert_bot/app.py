@@ -14,6 +14,7 @@ from stock_alert_bot.notifier.commands import BotCommandHandler
 from stock_alert_bot.notifier.discord_bot import DiscordNotifier
 from stock_alert_bot.notifier.formatter import format_scan_result
 from stock_alert_bot.notifier.telegram_bot import TelegramNotifier, TelegramPollingBot
+from stock_alert_bot.scan_dispatcher import ScanDispatcher
 from stock_alert_bot.scanner import StockScanner
 from stock_alert_bot.scheduler.runner import SchedulerRunner
 from stock_alert_bot.state.machine import StateMachine
@@ -58,6 +59,11 @@ def main() -> None:
     )
     notifiers, telegram_notifier, discord_notifier = _build_notifiers(config, console=args.console)
     notifier_manager = NotifierManager(notifiers)
+    scan_dispatcher = ScanDispatcher(
+        scanner=scanner,
+        notifier_manager=notifier_manager,
+        max_message_chars=config.notifier.max_message_chars,
+    )
 
     if args.scan_once:
         result = scanner.run_scan(trigger="manual")
@@ -70,7 +76,7 @@ def main() -> None:
 
     scheduler_enabled = not args.no_scheduler
     command_handler = BotCommandHandler(
-        scanner=scanner,
+        scan_starter=scan_dispatcher,
         state_machine=state_machine,
         scheduler_enabled=scheduler_enabled,
         max_message_chars=config.notifier.max_message_chars,
@@ -79,10 +85,8 @@ def main() -> None:
     scheduler = None
     if scheduler_enabled:
         scheduler = SchedulerRunner(
-            scanner=scanner,
-            notifier_manager=notifier_manager,
+            scan_dispatcher=scan_dispatcher,
             interval_minutes=config.scanner.scan_interval_minutes,
-            max_message_chars=config.notifier.max_message_chars,
         )
         scheduler.start()
 
