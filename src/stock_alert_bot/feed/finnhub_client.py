@@ -29,7 +29,7 @@ class FinnhubClient:
         timeout_seconds: float = 10,
         max_retries: int = 3,
         retry_backoff_seconds: float = 1,
-        calls_per_minute: int = 60,
+        calls_per_minute: int = 55,
     ) -> None:
         if not api_key:
             raise ValueError("FINNHUB_API_KEY is required.")
@@ -114,13 +114,13 @@ class FinnhubClient:
         )
 
     def _get_json(self, endpoint: str, params: dict[str, Any]) -> dict[str, Any]:
-        self._wait_for_rate_limit_slot()
         query = dict(params)
         query["token"] = self.api_key
         url = f"{self.BASE_URL}{endpoint}?{urllib.parse.urlencode(query)}"
         last_error: Exception | None = None
 
         for attempt in range(1, self.max_retries + 1):
+            self._wait_for_rate_limit_slot()
             try:
                 request = urllib.request.Request(url, headers={"User-Agent": "usmart-quant/0.1"})
                 with urllib.request.urlopen(request, timeout=self.timeout_seconds) as response:
